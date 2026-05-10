@@ -1,3 +1,8 @@
 AGENTS.md
 progress.md
 .venv/
+media/
+!media/.gitkeep
+db.sqlite3
+__pycache__/
+.uv/
