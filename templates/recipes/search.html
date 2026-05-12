@@ -1,11 +1,12 @@
 <html>
 
 <head>
+    {% load static %}
     <title>Ratatoullie | Recipes List</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="src/styles.css" rel="stylesheet">
-    <script src="src/favorites.js"></script>
-    <script src="src/search.js" type="module"></script>
+    <link href="{% static 'recipes/styles.css' %}" rel="stylesheet">
+    <script src="{% static 'recipes/favorites.js' %}"></script>
+    <script src="{% static 'recipes/search.js' %}" type="module"></script>
 </head>
 
 <body>

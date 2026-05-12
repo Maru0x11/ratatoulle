@@ -1,9 +1,10 @@
 <html>
 
 <head>
+    {% load static %}
     <title>Ratatoulle | Login</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-     <link href="src/styles.css" rel="stylesheet">
+    <link href="{% static 'recipes/styles.css' %}" rel="stylesheet">
 </head>
 
 <body>
@@ -35,7 +36,7 @@
     </div>
   </div>
 </main>
-<script src="src/login.js"></script>
+<script src="{% static 'recipes/login.js' %}"></script>
 </body>
 
 </html>

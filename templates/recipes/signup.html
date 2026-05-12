@@ -2,9 +2,10 @@
 <html>
 
 <head>
+    {% load static %}
     <title>Ratatoulle | sign up</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="src/styles.css" rel="stylesheet">
+    <link href="{% static 'recipes/styles.css' %}" rel="stylesheet">
 </head>
 
 <body>
@@ -46,7 +47,7 @@
     </div>
   </div>
 </main>
-<script src="src/signup.js"></script>
+<script src="{% static 'recipes/signup.js' %}"></script>
 </body>
 
 </html>

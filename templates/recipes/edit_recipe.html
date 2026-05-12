@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    {% load static %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ratatoulle | Edit Recipe</title>
-    <link href="src/styles.css" rel="stylesheet">
-    <script src="src/edit_recipes.js" defer></script>
+    <link href="{% static 'recipes/styles.css' %}" rel="stylesheet">
+    <script src="{% static 'recipes/edit_recipes.js' %}" defer></script>
 </head>
 <body>
 

@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    {% load static %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ratatoulle | Home</title>
-    <link href="src/styles.css" rel="stylesheet">
-    <script src="src/index.js"></script>
+    <link href="{% static 'recipes/styles.css' %}" rel="stylesheet">
 </head>
 <body>
   <nav class="nav-bar-user">
@@ -23,7 +23,7 @@
             <p>The best place to find, save, and share your favorite recipes.</p>
 
             <br>
-            <img src="src/assets/images/1.webp" alt="Delicious Food" class="asset-img-first">
+            <img src="{% static 'recipes/assets/images/1.webp' %}" alt="Delicious Food" class="asset-img-first">
             <br>
         </section>
         <hr>
