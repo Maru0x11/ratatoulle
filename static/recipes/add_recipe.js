@@ -1,4 +1,13 @@
-export let recipesArr = JSON.parse(localStorage.getItem("recipesArr")) || [];
+export let recipesArr = [];
+
+function getCookie(name) {
+    const cookieValue = `; ${document.cookie}`;
+    const parts = cookieValue.split(`; ${name}=`);
+    if (parts.length === 2) {
+        return parts.pop().split(";").shift();
+    }
+    return "";
+}
 
 document.addEventListener('DOMContentLoaded', () => {
     const addIngrdBtn = document.querySelector('.btn-add');
@@ -7,7 +16,6 @@ document.addEventListener('DOMContentLoaded', () => {
         addIngrdBtn.addEventListener("click", () => {
             const table = document.getElementById('ingredients-table');
             const emptyState = document.getElementById('empty-state');
-            // FIX: Target the ID directly instead of searching through the table variable
             const ingrdTbody = document.getElementById('ingredients-tbody');
 
             if (!ingrdTbody) return;
@@ -26,7 +34,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 </tr>
             `;
             
-            // FIX: Use insertAdjacentHTML so you don't wipe out what was already typed
             ingrdTbody.insertAdjacentHTML('beforeend', newRow);
 
             table.classList.remove('hidden');
@@ -39,7 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const recipeForm = document.querySelector('form');
     if (recipeForm) {
-        recipeForm.addEventListener("submit", (e) => {
+        recipeForm.addEventListener("submit", async (e) => {
             e.preventDefault();
 
             const inputNameData = document.querySelectorAll('.ing_name');
@@ -64,15 +71,34 @@ document.addEventListener('DOMContentLoaded', () => {
                 ingredients: ingredients
             };
 
-            recipesArr.push(recipe);
-            localStorage.setItem('recipesArr', JSON.stringify(recipesArr));
+            try {
+                const response = await fetch("/api/recipes/create/", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": getCookie("csrftoken"),
+                    },
+                    body: JSON.stringify(recipe),
+                });
 
-            document.getElementById("error-message").style.display = 'none';
-            document.getElementById("submit-message").style.display = 'block';
+                if (!response.ok) {
+                    const data = await response.json().catch(() => ({}));
+                    const message = data.error || "Failed to create recipe.";
+                    document.getElementById("error-message").textContent = message;
+                    document.getElementById("error-message").style.display = "block";
+                    return;
+                }
 
-            setTimeout(() => {
-                window.location.href = 'manage_recipes.html';
-            }, 1500);
+                document.getElementById("error-message").style.display = "none";
+                document.getElementById("submit-message").style.display = "block";
+
+                setTimeout(() => {
+                    window.location.href = "manage_recipes.html";
+                }, 1500);
+            } catch (error) {
+                document.getElementById("error-message").textContent = "Network error. Please try again.";
+                document.getElementById("error-message").style.display = "block";
+            }
         });
     }
 });
