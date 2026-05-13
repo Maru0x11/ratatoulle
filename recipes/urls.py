@@ -31,7 +31,7 @@ urlpatterns = [
         "recipes",
         RedirectView.as_view(url="/search.html", permanent=False),
     ),
-
+    path("api/recipes/", views.list_recipes, name="list_recipes"),
     path("api/recipes/create/", views.create_recipe, name="create_recipe"),
     path("api/recipes/<int:recipe_id>/", views.recipe_detail_api, name="recipe_detail_api"),
 ]

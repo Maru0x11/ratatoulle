@@ -1,43 +1,21 @@
-/* search_logic.js */
-import { renderRecipes } from './render_recipes.js';
+import { fetchRecipes, renderRecipes } from './render_recipes.js';
 
-renderRecipes();
+// Load and display all recipes when the page first loads
+fetchRecipes().then(renderRecipes);
 
 const searchForm = document.querySelector('.search-container form');
 
 if (searchForm) {
-    searchForm.addEventListener('submit', function(e) {
-        e.preventDefault(); 
+  searchForm.addEventListener('submit', async function (e) {
+    e.preventDefault();
 
-        // get parameters from the form
-        const formData = new FormData(searchForm);
-        const query = formData.get('query').toLowerCase().trim();
-        const searchType = formData.get('search_type');
-        const courseFilter = formData.get('course').toLowerCase();
+    const formData = new FormData(searchForm);
+    const query      = formData.get('query').trim();
+    const searchType = formData.get('search_type');
+    const course     = formData.get('course');
 
-
-        const allRecipes = JSON.parse(localStorage.getItem('recipesArr') || '[]');
-
-        // filter allrecipes based on parameters
-        const filteredResults = allRecipes.filter(recipe => {
-            const matchesCourse = (courseFilter === "" || recipe.course.toLowerCase() === courseFilter);
-            
-            let matchesQuery = true;
-            if (query !== "") {
-                if (searchType === 'name') {
-                    matchesQuery = recipe.name.toLowerCase().includes(query);
-                } else if (searchType === 'ingredient') {
-                    // Checks if any ingredient name matches the query
-                    matchesQuery = recipe.ingredients.some(ing => 
-                        ing.name.toLowerCase().includes(query)
-                    );
-                }
-            }
-
-            return matchesCourse && matchesQuery;
-        });
-
-        // call render recipes on the partially filtered results
-        renderRecipes(filteredResults);
-    });
+    // Send filters to Django API
+    const recipes = await fetchRecipes({ query, search_type: searchType, course });
+    renderRecipes(recipes);
+  });
 }
