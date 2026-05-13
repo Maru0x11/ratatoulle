@@ -1,988 +1,468 @@
+:root {
+  --bg: #f6efe5;
+  --bg-soft: #fbf6ef;
+  --card: #fffaf4;
+  --card-strong: #fffdf9;
+  --text: #2f241d;
+  --muted: #716154;
+  --border: #dfd1c0;
+  --primary: #bf5b36;
+  --primary-strong: #a24929;
+  --accent: #cf9b6f;
+  --danger: #b5402f;
+  --sage: #6d7b57;
+  --shadow: 0 12px 30px rgba(95, 63, 39, 0.11);
+}
+
 * {
+  box-sizing: border-box;
+}
+
+html,
+body {
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
-  font-size: 20px;
 }
 
 body {
-  font-family: 'Arial', sans-serif;
-  background-color: #121212;
-  color: #e0e0e0;
-  font-size: 16px;
-  line-height: 1.5;
+  font-family: "Georgia", "Times New Roman", serif;
+  color: var(--text);
+  background:
+    radial-gradient(circle at 20% 0%, #fff8ee 0%, transparent 50%),
+    radial-gradient(circle at 100% 10%, #f2e3cf 0%, transparent 40%),
+    linear-gradient(180deg, var(--bg-soft) 0%, var(--bg) 100%);
+  line-height: 1.6;
 }
 
 a {
-  color: #e0e0e0;
+  color: var(--primary);
   text-decoration: none;
-  transition: color 0.2s;
 }
 
 a:hover {
-  color: #4CAF50;
+  color: var(--primary-strong);
 }
-
-/** nav bars **/
 
 .nav-bar-user,
 .nav-bar-login,
 .nav-bar-admin {
-  padding: 16px 24px;
-  background-color: #1e1e1e;
-  border-bottom: 1px solid #2a2a2a;
+  background: rgba(255, 249, 240, 0.95);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  backdrop-filter: blur(5px);
+  z-index: 20;
 }
 
 .nav-bar-user ul,
 .nav-bar-login ul,
-.nav-bar-admin ul {
-  display: flex;
+.nav-bar-admin ul,
+.nav-login-ul {
   list-style: none;
-  justify-content: space-between;
-  padding: 0;
-  margin: 0;
-}
-
-.nav-bar-user li,
-.nav-bar-login li,
-.nav-bar-admin li {
-  list-style: none;
-}
-
-.nav-bar-user ul li a,
-.nav-bar-login ul li a,
-.nav-bar-admin ul li a {
-  text-decoration: none;
-  color: #888;
-  font-size: 14px;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  transition: color 0.2s;
-}
-
-.nav-bar-user ul li a:hover,
-.nav-bar-login ul li a:hover,
-.nav-bar-admin ul li a:hover {
-  color: #4CAF50;
-}
-
-/** end nav bars **/
-
-/** login page **/
-
-.login-main {
-  max-width: 480px;
-  margin: 60px auto 0;
-  padding: 0 20px;
-}
-
-.login-card {
-  background-color: #1e1e1e;
-  border: 1px solid #333;
-  border-radius: 10px;
-  padding: 36px 32px;
-}
-
-.login-card h2 {
-  font-size: 24px;
-  font-weight: bold;
-  margin-bottom: 24px;
-  text-align: center;
-  color: #e0e0e0;
-}
-
-.login-form-group {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 16px;
-}
-
-.login-form-group label {
-  font-size: 14px;
-  font-weight: bold;
-  margin-bottom: 6px;
-  color: #aaaaaa;
-}
-
-.login-form-group input {
-  padding: 10px 12px;
-  border: 1px solid #444;
-  border-radius: 6px;
-  background-color: #2a2a2a;
-  color: #e0e0e0;
-  font-size: 15px;
-}
-
-.login-form-group input:focus {
-  outline: none;
-  border-color: #4CAF50;
-}
-
-.btn-login {
-  width: 100%;
-  padding: 12px;
-  background-color: #4CAF50;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  font-size: 16px;
-  font-weight: bold;
-  cursor: pointer;
-  margin-top: 4px;
-}
-
-.btn-login:hover {
-  background-color: #45a049;
-}
-
-.btn-login-admin {
-  width: 100%;
-  padding: 12px;
-  background-color: transparent;
-  color: #e0e0e0;
-  border: 1px solid #444;
-  border-radius: 6px;
-  font-size: 16px;
-  cursor: pointer;
-  margin-top: 10px;
-}
-
-.btn-login-admin:hover {
-  background-color: #2a2a2a;
-  border-color: #555;
-}
-
-.login-divider {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin: 20px 0;
-}
-
-.login-divider span {
-  font-size: 13px;
-  color: #555;
-  white-space: nowrap;
-}
-
-.login-divider::before,
-.login-divider::after {
-  content: '';
-  flex: 1;
-  height: 1px;
-  background: #333;
-}
-
-.login-footer {
-  text-align: center;
-  margin-top: 18px;
-  font-size: 14px;
-  color: #888888;
-}
-
-.login-footer a {
-  color: #4CAF50;
-}
-
-/** end login page **/
-
-/** signup page **/
-
-.signup-main {
-  max-width: 480px;
-  margin: 60px auto 0;
-  padding: 0 20px;
-}
-
-.signup-card {
-  background-color: #1e1e1e;
-  border: 1px solid #333;
-  border-radius: 10px;
-  padding: 36px 32px;
-}
-
-.signup-card h2 {
-  font-size: 24px;
-  font-weight: bold;
-  margin-bottom: 24px;
-  text-align: center;
-  color: #e0e0e0;
-}
-
-.signup-form-group {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 16px;
-}
-
-.signup-form-group label {
-  font-size: 14px;
-  font-weight: bold;
-  margin-bottom: 6px;
-  color: #aaaaaa;
-}
-
-.signup-form-group input {
-  padding: 10px 12px;
-  border: 1px solid #444;
-  border-radius: 6px;
-  background-color: #2a2a2a;
-  color: #e0e0e0;
-  font-size: 15px;
-}
-
-.signup-form-group input:focus {
-  outline: none;
-  border-color: #4CAF50;
-}
-
-.signup-checkbox-group {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 20px;
-}
-
-.signup-checkbox-group label {
-  font-size: 14px;
-  color: #aaaaaa;
-}
-
-.signup-checkbox-group input[type="checkbox"] {
-  accent-color: #4CAF50;
-  width: 16px;
-  height: 16px;
-}
-
-.btn-signup-submit {
-  width: 100%;
-  padding: 12px;
-  background-color: #4CAF50;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  font-size: 16px;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-.btn-signup-submit:hover {
-  background-color: #45a049;
-}
-
-.signup-footer {
-  text-align: center;
-  margin-top: 18px;
-  font-size: 14px;
-  color: #888888;
-}
-
-.signup-footer a {
-  color: #4CAF50;
-}
-
-/** end signup page **/
-
-/** index **/
-
-.main-index {
-  padding: 40px 24px;
-}
-
-.main-index hr {
-  border: none;
-  border-top: 1px solid #2a2a2a;
-  margin: 32px 0;
-}
-
-.main-index h1 {
-  font-size: 32px;
-  font-weight: 600;
-  margin-bottom: 8px;
-}
-
-.main-index > p {
-  font-size: 16px;
-  color: #888;
-  margin-bottom: 32px;
-}
-
-.asset-img-first {
-  width: 100%;
-  height: auto;
-  border-radius: 8px;
-  margin-bottom: 40px;
-}
-
-.section-index {
-  display: flex;
-  flex-direction: column;
-}
-
-.section-index h3 {
-  margin-bottom: 15px;
-}
-
-.container-index {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
-}
-
-.card-index {
-  background-color: #1e1e1e;
-  border: 1px solid #2a2a2a;
-  border-radius: 8px;
-  padding: 24px;
-}
-
-.card-index h4 {
-  font-size: 14px;
-  font-weight: 600;
-  color: #4CAF50;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin-bottom: 8px;
-}
-
-.card-index p {
-  font-size: 14px;
-  color: #888;
-  line-height: 1.6;
-}
-
-/** end index **/
-
-/** add recipe **/
-
-.main-add-recipe {
-  max-width: 600px;
   margin: 0 auto;
-  padding: 40px 20px;
-}
-
-.main-add-recipe h1 {
-  font-size: 24px;
-  font-weight: 600;
-  margin-bottom: 32px;
-}
-
-.form-card {
-  background-color: #1e1e1e;
-  border: 1px solid #2a2a2a;
-  border-radius: 8px;
-  padding: 24px;
-  margin-bottom: 24px;
-}
-
-.form-card h3 {
-  font-size: 13px;
-  font-weight: 500;
-  color: #4CAF50;
-  margin-bottom: 20px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-}
-
-.form-row {
-  display: flex;
-  gap: 16px;
-}
-
-.form-row .form-group-add-recipe {
-  flex: 1;
-}
-
-.form-group-add-recipe {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 16px;
-}
-
-.form-group-add-recipe label {
-  margin-bottom: 8px;
-  font-size: 13px;
-  font-weight: 500;
-  color: #888;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.form-group-add-recipe input,
-.form-group-add-recipe select,
-.form-group-add-recipe textarea {
-  padding: 12px 14px;
-  border: 1px solid #2a2a2a;
-  border-radius: 4px;
-  background-color: #121212;
-  color: #e0e0e0;
-  font-size: 14px;
-  transition: border-color 0.2s;
-}
-
-.form-group-add-recipe input::placeholder,
-.form-group-add-recipe textarea::placeholder {
-  color: #555;
-}
-
-.form-group-add-recipe input:focus,
-.form-group-add-recipe select:focus,
-.form-group-add-recipe textarea:focus {
-  outline: none;
-  border-color: #4CAF50;
-}
-
-.form-group-add-recipe textarea {
-  resize: vertical;
-  min-height: 80px;
-}
-
-.ingredients-empty-state {
+  padding: 14px 20px;
+  width: min(1120px, 100%);
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 10px;
-  padding: 30px 20px;
-  border-radius: 4px;
-  background-color: #1a1a1a;
-  border: 1px dashed #444;
-  cursor: pointer;
-  transition: border-color 0.2s, color 0.2s;
+  gap: 20px;
 }
 
-.ingredients-empty-state:hover {
-  border-color: #4CAF50;
+.nav-bar-user li:last-child,
+.nav-bar-login li:last-child,
+.nav-bar-admin li:last-child {
+  margin-left: auto;
 }
 
-.ingredients-empty-state.hidden {
-  display: none;
-}
-
-.ingredients-empty-state .icon {
-  font-size: 20px;
-  color: #4CAF50;
-}
-
-.ingredients-empty-state .label {
-  font-size: 14px;
-  color: #888;
-}
-
-.ingredients-table-wrapper {
-  margin-top: 16px;
-}
-
-.ingredients-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.ingredients-table.hidden {
-  display: none;
-}
-
-.ingredients-table th,
-.ingredients-table td {
-  padding: 12px;
-  border-bottom: 1px solid #2a2a2a;
-  text-align: left;
-}
-
-.ingredients-table th {
-  font-size: 12px;
-  font-weight: 500;
-  color: #888;
+.nav-bar-user a,
+.nav-bar-login a,
+.nav-bar-admin a {
+  font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+  font-size: 0.84rem;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.08em;
+  color: #5c4b3d;
+  border-bottom: 2px solid transparent;
+  padding-bottom: 4px;
 }
 
-.ingredients-table td:first-child {
-  width: 40px;
-  color: #888;
+.nav-bar-user a:hover,
+.nav-bar-login a:hover,
+.nav-bar-admin a:hover {
+  color: var(--primary);
+  border-color: var(--accent);
 }
 
-.ingredients-table input {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #2a2a2a;
-  border-radius: 4px;
-  background-color: #121212;
-  color: #e0e0e0;
-  font-size: 14px;
+main {
+  width: min(1120px, 100%);
+  margin: 0 auto;
+  padding: 36px 20px 60px;
 }
 
-.ingredients-table input:focus {
-  outline: none;
-  border-color: #4CAF50;
+h1,
+h2,
+h3,
+h4 {
+  margin: 0 0 12px;
+  line-height: 1.2;
 }
 
-.form-actions {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+h1 {
+  font-size: clamp(2rem, 4vw, 3rem);
+}
+
+h2 {
+  font-size: clamp(1.5rem, 3vw, 2.1rem);
+}
+
+h3 {
+  font-size: 1.3rem;
+}
+
+p {
+  margin: 0 0 14px;
+  color: #4d3e33;
+}
+
+.main-index .section-index {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 28px;
+  box-shadow: var(--shadow);
+}
+
+.main-index .section-index + .section-index {
   margin-top: 24px;
 }
 
-.button-group {
-  display: flex;
-  gap: 12px;
-  align-items: center;
-}
-
-.btn-add {
-  padding: 8px 14px;
-  background-color: #2a2a2a;
-  color: #888;
-  border: 1px solid #444;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 13px;
-  transition: border-color 0.2s, color 0.2s;
-}
-
-.btn-add:hover {
-  border-color: #4CAF50;
-  color: #4CAF50;
-}
-
-.btn-submit {
-  padding: 8px 14px;
-  background-color: #4CAF50;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 13px;
-  transition: background-color 0.2s;
-}
-
-.btn-submit:hover {
-  background-color: #45a049;
-}
-
-.btn-cancel {
-  display: inline-block;
-  padding: 8px 14px;
-  background-color: transparent;
-  color: #888;
-  border: 1px solid #2a2a2a;
-  border-radius: 4px;
-  font-size: 13px;
-  text-decoration: none;
-  transition: border-color 0.2s, color 0.2s;
-}
-
-.btn-cancel:hover {
-  border-color: #888;
-  color: #e0e0e0;
-}
-
-#add-message,
-#error-message,
-#submit-message {
+.main-index hr {
   display: none;
-  padding: 14px 18px;
-  border-radius: 6px;
-  font-size: 14px;
-  margin: 10px 0;
 }
 
-#add-message {
-  background-color: rgba(76, 175, 80, 0.12);
-  color: #4CAF50;
-  border: 1px solid rgba(76, 175, 80, 0.3);
+.asset-img-first {
+  display: block;
+  width: 100%;
+  max-height: 420px;
+  object-fit: cover;
+  border-radius: 14px;
+  margin-top: 16px;
+  border: 1px solid #e2d8cc;
 }
 
-#error-message {
-  background-color: rgba(231, 76, 60, 0.12);
-  color: #e74c3c;
-  border: 1px solid rgba(231, 76, 60, 0.3);
+.container-index {
+  margin-top: 14px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px;
 }
 
-#submit-message {
-  background-color: rgba(76, 175, 80, 0.12);
-  color: #4CAF50;
-  border: 1px solid rgba(76, 175, 80, 0.3);
+.card-index {
+  padding: 18px;
+  background: var(--card-strong);
+  border: 1px solid var(--border);
+  border-radius: 12px;
 }
 
-/** end add recipe **/
-
-/** search & manage recipes **/
+.card-index h4 {
+  color: var(--sage);
+}
 
 .search-page-main,
-.manage-page-main {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 40px 24px;
+.manage-page-main,
+.favorites-main,
+.recipe-detail-main,
+.main-add-recipe,
+.login-main,
+.signup-main {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+}
+
+.search-page-main,
+.manage-page-main,
+.favorites-main,
+.recipe-detail-main,
+.main-add-recipe {
+  padding: 28px;
 }
 
 .search-container {
-  margin: 0 0 32px;
-  padding: 20px;
-  background-color: #1e1e1e;
-  border: 1px solid #2a2a2a;
-  border-radius: 8px;
+  background: #fffdf9;
+  border: 1px solid #e8dccf;
+  border-radius: 12px;
+  padding: 16px;
+  margin: 14px 0 22px;
+}
+
+.search-container form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.search-container br {
+  display: none;
+}
+
+input[type="text"],
+input[type="password"],
+select,
+textarea {
+  width: 100%;
+  max-width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #fff;
+  color: var(--text);
+  font-size: 0.98rem;
+  padding: 10px 12px;
+  font-family: "Trebuchet MS", "Segoe UI", sans-serif;
 }
 
 .search-container input[type="text"] {
-  padding: 10px 14px;
-  background-color: #121212;
-  border: 1px solid #2a2a2a;
-  border-radius: 4px;
-  color: #e0e0e0;
-  font-size: 14px;
-  width: 65%;
-}
-
-.search-container input[type="text"]::placeholder {
-  color: #555;
-}
-
-.search-container input[type="text"]:focus {
-  outline: none;
-  border-color: #4CAF50;
+  width: min(360px, 100%);
 }
 
 .search-container select {
-  padding: 10px 14px;
-  background-color: #121212;
-  border: 1px solid #2a2a2a;
-  border-radius: 4px;
-  color: #e0e0e0;
-  font-size: 14px;
+  width: min(220px, 100%);
 }
 
-.search-container input[type="radio"] {
-  accent-color: #4CAF50;
+input:focus,
+select:focus,
+textarea:focus {
+  outline: 2px solid #d98a60;
+  border-color: #cf845b;
+  outline-offset: 1px;
 }
 
-.search-container button {
-  padding: 8px 16px;
-  background-color: #2a2a2a;
-  color: #888;
-  border: 1px solid #444;
-  border-radius: 4px;
+button,
+input[type="submit"],
+input[type="button"],
+.btn-card,
+.btn-submit,
+.btn-login,
+.btn-signup-submit,
+.btn-add,
+.btn-cancel {
+  font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+  font-size: 0.93rem;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  padding: 10px 18px;
   cursor: pointer;
-  font-size: 13px;
-  transition: border-color 0.2s, color 0.2s;
+  transition: transform 0.15s ease, box-shadow 0.2s ease, background-color 0.2s ease;
 }
 
-.search-container button:hover {
-  border-color: #4CAF50;
-  color: #4CAF50;
+button,
+input[type="submit"],
+.btn-submit,
+.btn-login,
+.btn-signup-submit,
+.btn-add,
+#add-fav-form input[type="submit"] {
+  background: var(--primary);
+  color: #fff;
 }
 
-.search-container a {
-  color: #888;
-  font-size: 14px;
+button:hover,
+input[type="submit"]:hover,
+.btn-submit:hover,
+.btn-login:hover,
+.btn-signup-submit:hover,
+.btn-add:hover,
+#add-fav-form input[type="submit"]:hover {
+  background: var(--primary-strong);
+  transform: translateY(-1px);
 }
 
-.search-container a:hover {
-  color: #4CAF50;
+.btn-cancel {
+  background: transparent;
+  border-color: var(--border);
+  color: #5d4d40;
 }
 
-#recipesList {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
+.btn-cancel:hover {
+  background: #f1e6d8;
 }
 
-.recipe-card {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  padding: 20px;
-  border: 1px solid #2a2a2a;
-  border-radius: 8px;
-  background-color: #1e1e1e;
-}
-
-.recipe-card h3 {
-  font-size: 16px;
-  font-weight: 500;
-  color: #e0e0e0;
-}
-
-.recipe-card p {
-  font-size: 14px;
-  color: #888;
-}
-
-.recipe-card button,
-.recipe-card input[type="submit"] {
-  display: inline-block;
-  padding: 6px 12px;
-  background-color: #2a2a2a;
-  color: #888;
-  border: 1px solid #444;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 13px;
-  transition: border-color 0.2s, color 0.2s;
-}
-
-.recipe-card button:hover,
-.recipe-card input[type="submit"]:hover {
-  border-color: #4CAF50;
-  color: #4CAF50;
-}
-
-.recipe-card button.btn-delete,
-.recipe-card input[type="submit"].btn-delete {
-  color: #c0392b;
-  border-color: #3a2a2a;
-}
-
-.recipe-card button.btn-delete:hover,
-.recipe-card input[type="submit"].btn-delete:hover {
-  border-color: #c0392b;
-  background-color: rgba(192, 57, 43, 0.1);
-}
-
-.no-results {
-  color: #888;
-  font-size: 14px;
-  padding: 40px 20px;
-  text-align: center;
-}
-
-/** end search & manage recipes **/
-
-/** favorites **/
-
-.favorites-main {
-  max-width: 1000px;
-  margin: 0 auto;
-  padding: 40px 24px;
-}
-
-.favorites-main h1 {
-  font-size: 24px;
-  font-weight: 600;
-  margin-bottom: 8px;
-}
-
-.favorites-main > p {
-  color: #888;
-  font-size: 14px;
-  margin-bottom: 24px;
-}
-
-.favorites-table {
+.favorites-table,
+.ingredients-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 14px;
+  margin-top: 14px;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
 }
 
-.favorites-table thead tr {
-  background-color: #1e1e1e;
-}
-
-.favorites-table th {
-  padding: 14px 12px;
+.favorites-table th,
+.favorites-table td,
+.ingredients-table th,
+.ingredients-table td {
+  border-bottom: 1px solid #efe1d3;
+  padding: 11px 12px;
   text-align: left;
-  font-size: 12px;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  color: #888;
-  border-bottom: 1px solid #2a2a2a;
-}
-
-.favorites-table td {
-  padding: 12px;
-  color: #e0e0e0;
-  border-bottom: 1px solid #2a2a2a;
   vertical-align: top;
 }
 
-.favorites-table tbody tr:hover {
-  background-color: #1a1a1a;
+.favorites-table th,
+.ingredients-table th {
+  background: #f3e7d7;
+  color: #5b4738;
+  font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+  font-weight: 700;
+  font-size: 0.86rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
-.favorites-table ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
+.favorites-table tr:nth-child(even) td,
+.ingredients-table tr:nth-child(even) td {
+  background: #fffaf2;
 }
 
-.favorites-table li {
-  font-size: 13px;
-  color: #888;
-  padding: 3px 0;
+.form-add-recipe,
+#editForm {
+  display: grid;
+  gap: 18px;
+  margin-top: 18px;
 }
 
-.favorites-table a {
-  color: #888;
-  font-size: 13px;
-  transition: color 0.2s;
+.form-card,
+.ingredients-table-wrapper {
+  background: #fffdf9;
+  border: 1px solid #eadccc;
+  border-radius: 12px;
+  padding: 16px;
 }
 
-.favorites-table a:hover {
-  color: #4CAF50;
-}
-.favorites-actions {
-  display: flex;
-  flex-direction: column;
+.form-group-add-recipe,
+.login-form-group,
+.signup-form-group {
+  display: grid;
   gap: 8px;
+  margin-bottom: 10px;
 }
 
-/** end favorites **/
-
-/** modal **/
-
-.modal-overlay {
-  display: none;
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0, 0, 0, 0.8);
-  z-index: 1000;
-  align-items: center;
-  justify-content: center;
+.form-group-add-recipe label,
+.login-form-group label,
+.signup-form-group label,
+.subtitle-text,
+.ingredients-subtitle {
+  font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+  color: var(--muted);
+  font-size: 0.9rem;
 }
 
-.modal-overlay.active {
+.form-actions-row {
   display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 
-.modal-box {
-  background-color: #1e1e1e;
-  border: 1px solid #2a2a2a;
-  border-radius: 8px;
+.login-main,
+.signup-main {
+  max-width: 520px;
+  margin-top: 44px;
   padding: 24px;
-  max-width: 360px;
-  width: 90%;
+}
+
+.login-card,
+.signup-card {
+  background: #fffdf9;
+  border: 1px solid #e8dccf;
+  border-radius: 14px;
+  padding: 24px;
+}
+
+.login-footer,
+.signup-footer {
+  margin-top: 14px;
+  color: var(--muted);
+  font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+  font-size: 0.9rem;
+}
+
+.ingredients-empty-state {
+  border: 1px dashed #d4b497;
+  border-radius: 12px;
+  padding: 18px;
   text-align: center;
+  color: #7c6654;
+  background: #fff8ef;
 }
 
-.modal-box h3 {
-  font-size: 18px;
-  font-weight: 500;
-  color: #e0e0e0;
-  margin-bottom: 12px;
+.ingredients-empty-state .icon {
+  font-size: 1.6rem;
+  margin-bottom: 6px;
+  color: var(--primary);
 }
 
-.modal-box p {
-  font-size: 14px;
-  color: #888;
-  margin-bottom: 24px;
+#submit-message,
+#add-message,
+#error-message {
+  font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+  margin: 10px 0;
+  padding: 10px 12px;
+  border-radius: 10px;
+  display: none;
 }
 
-.modal-actions {
-  display: flex;
-  gap: 12px;
-  justify-content: center;
+#submit-message,
+#add-message {
+  background: #eaf4e5;
+  border: 1px solid #bfd8b3;
+  color: #355727;
 }
 
-.modal-actions button {
-  padding: 8px 16px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 13px;
+#error-message {
+  background: #ffeceb;
+  border: 1px solid #f1b6ae;
+  color: var(--danger);
 }
 
-.btn-modal-cancel {
-  background-color: #2a2a2a;
-  color: #888;
-  border: 1px solid #444;
+.hidden {
+  display: none;
 }
 
-.btn-modal-cancel:hover {
-  background-color: #333;
-  color: #e0e0e0;
-}
+@media (max-width: 760px) {
+  .nav-bar-user ul,
+  .nav-bar-login ul,
+  .nav-bar-admin ul,
+  .nav-login-ul {
+    flex-wrap: wrap;
+    gap: 10px 14px;
+  }
 
-.btn-modal-confirm {
-  background-color: #c0392b;
-  color: white;
-  border: none;
-}
+  .nav-bar-user li:last-child,
+  .nav-bar-login li:last-child,
+  .nav-bar-admin li:last-child {
+    margin-left: 0;
+  }
 
-.btn-modal-confirm:hover {
-  background-color: #a93226;
-}
+  main {
+    padding: 22px 14px 48px;
+  }
 
-/** end modal **/
+  .search-page-main,
+  .manage-page-main,
+  .favorites-main,
+  .recipe-detail-main,
+  .main-add-recipe,
+  .login-main,
+  .signup-main {
+    padding: 20px;
+  }
 
-/** toast **/
-
-.toast {
-  position: fixed;
-  bottom: 24px;
-  right: 24px;
-  background-color: #1e1e1e;
-  color: #e0e0e0;
-  border: 1px solid #2a2a2a;
-  padding: 12px 20px;
-  border-radius: 6px;
-  font-size: 14px;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.3s ease;
-  z-index: 2000;
-}
-
-.toast.show {
-  opacity: 1;
-}
-
-.toast.toast-success {
-  border-color: #4CAF50;
-  color: #4CAF50;
-}
-
-.toast.toast-danger {
-  border-color: #c0392b;
-  color: #c0392b;
-}
-/** Favorites **/
-#favorites-list td {
-    border: 1px solid #333;
-    padding: 12px;
-}
-
-#favorites-list ul {
-    margin: 0;
-    padding-left: 15px;
-    font-size: 0.85rem;
-}
-/** end favorites **/
-.btn-remove {
-    background-color: transparent;
-    color: #c0392b; 
-    border: 1px solid #c0392b;
-    padding: 6px 12px;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-.btn-remove:hover {
-    background-color: #c0392b;
-    color: white;
-}
-/** end toast **/
-
-/** misc**/
-
-.recipe-detail-main {
-  max-width: 700px;
-  margin: 0 auto;
-  padding: 40px 24px;
-}
-
-.btn-delete-detail-admin {
-  padding: 8px 14px;
-  background-color: transparent;
-  color: #c0392b;
-  border: 1px solid #c0392b;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 13px;
-  transition: background-color 0.2s;
-}
-
-.btn-delete-detail-admin:hover {
-  background-color: rgba(192, 57, 43, 0.1);
+  .favorites-table,
+  .ingredients-table {
+    font-size: 0.9rem;
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
 }
