@@ -1,9 +1,4 @@
-let usersArr = localStorage.getItem('usersArr');
-if (usersArr === null) {
-  usersArr = [];
-} else {
-  usersArr = JSON.parse(usersArr);
-}
+import { getCsrfToken } from './auth.js';
 
 function showError(msg) {
   const el = document.getElementById('error-message');
@@ -16,38 +11,41 @@ function hideError() {
   el.style.display = 'none';
 }
 
-function findUser(identifier, password) {
-  return usersArr.find(u =>
-    (u.username.toLowerCase() === identifier.toLowerCase() ||
-     u.email.toLowerCase()    === identifier.toLowerCase()) &&
-     u.password === password
-  );
-}
-
-document.querySelector('.btn-login').addEventListener('click', function (e) {
+document.querySelector('.btn-login').addEventListener('click', async function (e) {
   e.preventDefault();
   hideError();
 
-  const identifier = document.getElementById('username').value.trim();
-  const password   = document.getElementById('password').value;
+  const username = document.getElementById('username').value.trim();
+  const password = document.getElementById('password').value;
 
-  if (!identifier || !password) {
-    showError('Please enter your username/email and password.');
+  if (!username || !password) {
+    showError('Please enter your username and password.');
     return;
   }
 
-  const matchedUser = findUser(identifier, password);
+  try {
+    const response = await fetch('/api/login/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': getCsrfToken()
+      },
+      body: JSON.stringify({ username, password })
+    });
 
-  if (!matchedUser) {
-    showError('Incorrect username/email or password. Please try again.');
-    return;
-  }
+    const data = await response.json();
 
-  sessionStorage.setItem('loggedInUser', JSON.stringify(matchedUser));
-
-  if (matchedUser.isAdmin) {
-    window.location.href = 'index_admin.html';
-  } else {
-    window.location.href = 'index.html';
+    if (response.ok) {
+      if (data.user.is_admin) {
+        window.location.href = 'index_admin.html';
+      } else {
+        window.location.href = 'index.html';
+      }
+    } else {
+      showError(data.error || 'Login failed. Please try again.');
+    }
+  } catch (err) {
+    console.error('Login error:', err);
+    showError('An error occurred. Please try again later.');
   }
 });

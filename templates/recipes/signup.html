@@ -20,6 +20,7 @@
     <h2>Sign Up</h2>
     <p id="error-message"></p>
     <form>
+      {% csrf_token %}
       <div class="signup-form-group">
         <label for="username">Username</label>
         <input type="text" id="username" name="username" placeholder="Dula" required>
@@ -36,10 +37,6 @@
         <label for="confirm">Confirm Password</label>
         <input type="password" id="confirm" name="confirm" placeholder="••••••" required>
       </div>
-    <div class="signup-checkbox-group">
-        <input type="checkbox" name="admin" id="admin">
-        <label for="admin">is_admin</label>
-    </div>
       <button type="submit" class="btn-signup-submit">Sign Up</button>
     </form>
     <div class="signup-footer">
@@ -47,7 +44,7 @@
     </div>
   </div>
 </main>
-<script src="{% static 'recipes/signup.js' %}"></script>
+<script type="module" src="{% static 'recipes/signup.js' %}"></script>
 </body>
 
 </html>
