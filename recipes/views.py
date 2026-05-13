@@ -1,9 +1,10 @@
 import json
-
 from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
-
-from .models import Ingredient, Recipe
+from django.contrib.auth import authenticate, login, logout
+from django.db import IntegrityError
+from django.views.decorators.csrf import ensure_csrf_cookie
+from .models import Ingredient, Recipe, User
 
 
 def _json_error(message, status=400):
@@ -76,27 +77,33 @@ def _serialize_recipe(recipe):
     }
 
 @require_http_methods(["GET"])
-def recipe_list_api(request):
+def list_recipes(request):
     """
-    Retrieves a list of recipes with optional filtering by query, type, and course.
+    Retrieves a list of recipes with optional filtering by query, search_type, and course.
     """
-    query = request.GET.get('q', '').strip()
-    search_type = request.GET.get('type', 'name')
-    course_filter = request.GET.get('course', '').strip().lower()
+    query = request.GET.get("query", "").strip()
+    search_type = request.GET.get("search_type", "name")
+    course_filter = request.GET.get("course", "").strip().lower()
+    course_map = {
+        "appetizers": Recipe.CourseType.APPETIZERS,
+        "main course": Recipe.CourseType.MAIN_COURSE,
+        "main_course": Recipe.CourseType.MAIN_COURSE,
+        "dessert": Recipe.CourseType.DESSERT,
+    }
 
-    recipes = Recipe.objects.all().prefetch_related("ingredients")
+    queryset = Recipe.objects.all().prefetch_related("ingredients")
 
-    if course_filter:
-        recipes = recipes.filter(recipe_type__iexact=course_filter)
+    if course_filter and course_filter in course_map:
+        queryset = queryset.filter(recipe_type=course_map[course_filter])
 
     if query:
-        if search_type == 'name':
-            recipes = recipes.filter(title__icontains=query)
-        elif search_type == 'ingredient':
-            recipes = recipes.filter(ingredients__name__icontains=query).distinct()
+        if search_type == "name":
+            queryset = queryset.filter(title__icontains=query)
+        elif search_type == "ingredient":
+            queryset = queryset.filter(ingredients__name__icontains=query).distinct()
 
-    serialized_recipes = [_serialize_recipe(recipe) for recipe in recipes]
-    return JsonResponse(serialized_recipes, safe=False)
+    recipes = [_serialize_recipe(r) for r in queryset]
+    return JsonResponse({"recipes": recipes})
 
 @require_http_methods(["POST"])
 def create_recipe(request):
@@ -172,3 +179,94 @@ def recipe_detail_api(request, recipe_id):
         recipe.ingredients.add(ingredient)
 
     return JsonResponse({"message": "Recipe updated successfully.", "recipe": _serialize_recipe(recipe)})
+
+
+@ensure_csrf_cookie
+@require_http_methods(["POST"])
+def api_login(request):
+    try:
+        data = json.loads(request.body)
+        username = data.get("username")
+        password = data.get("password")
+    except (json.JSONDecodeError, AttributeError):
+        return _json_error("Invalid request data.")
+
+    if not username or not password:
+        return _json_error("Username and password are required.")
+
+    user = authenticate(request, username=username, password=password)
+    if user is not None:
+        login(request, user)
+        return JsonResponse({
+            "message": "Login successful",
+            "user": {
+                "id": user.id,
+                "username": user.username,
+                "email": user.email,
+                "is_admin": _is_admin_user(user)
+            }
+        })
+    else:
+        return _json_error("Invalid username or password.", status=401)
+
+
+@ensure_csrf_cookie
+@require_http_methods(["POST"])
+def api_signup(request):
+    try:
+        data = json.loads(request.body)
+        username = data.get("username")
+        email = data.get("email")
+        password = data.get("password")
+    except (json.JSONDecodeError, AttributeError):
+        return _json_error("Invalid request data.")
+
+    if not username or not email or not password:
+        return _json_error("Username, email, and password are required.")
+
+    if User.objects.filter(username=username).exists():
+        return _json_error("Username already exists.")
+    
+    if User.objects.filter(email=email).exists():
+        return _json_error("Email already exists.")
+
+    try:
+        user = User.objects.create_user(
+            username=username,
+            email=email,
+            password=password,
+            is_admin=False
+        )
+        login(request, user)
+        return JsonResponse({
+            "message": "User created successfully",
+            "user": {
+                "id": user.id,
+                "username": user.username,
+                "email": user.email,
+                "is_admin": _is_admin_user(user)
+            }
+        }, status=201)
+    except Exception as e:
+        return _json_error(f"Failed to create user: {str(e)}")
+
+
+@require_http_methods(["POST", "GET"])
+def api_logout(request):
+    logout(request)
+    return JsonResponse({"message": "Logout successful"})
+
+
+@require_http_methods(["GET"])
+def get_session_info(request):
+    if request.user.is_authenticated:
+        return JsonResponse({
+            "authenticated": True,
+            "user": {
+                "id": request.user.id,
+                "username": request.user.username,
+                "email": request.user.email,
+                "is_admin": _is_admin_user(request.user)
+            }
+        })
+    return JsonResponse({"authenticated": False})

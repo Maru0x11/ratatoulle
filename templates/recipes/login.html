@@ -21,6 +21,7 @@
     <p id="error-message"></p>
 
     <div class="login-form-group">
+      {% csrf_token %}
       <label for="username">Username / Email</label>
       <input type="text" id="username" name="username" placeholder="Bo0oda / abcd@gmail.com">
     </div>
@@ -36,7 +37,7 @@
     </div>
   </div>
 </main>
-<script src="{% static 'recipes/login.js' %}"></script>
+<script type="module" src="{% static 'recipes/login.js' %}"></script>
 </body>
 
 </html>
