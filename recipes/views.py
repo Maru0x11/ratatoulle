@@ -78,28 +78,29 @@ def _serialize_recipe(recipe):
 
 @require_http_methods(["GET"])
 def list_recipes(request):
-    queryset = Recipe.objects.prefetch_related("ingredients").all()
-
-    course = request.GET.get("course", "").strip().lower()
+    """
+    Retrieves a list of recipes with optional filtering by query, search_type, and course.
+    """
+    query = request.GET.get("query", "").strip()
+    search_type = request.GET.get("search_type", "name")
+    course_filter = request.GET.get("course", "").strip().lower()
     course_map = {
         "appetizers": Recipe.CourseType.APPETIZERS,
         "main course": Recipe.CourseType.MAIN_COURSE,
         "main_course": Recipe.CourseType.MAIN_COURSE,
         "dessert": Recipe.CourseType.DESSERT,
     }
-    if course and course in course_map:
-        queryset = queryset.filter(recipe_type=course_map[course])
 
-    query = request.GET.get("query", "").strip()
-    search_type = request.GET.get("search_type", "name")
+    queryset = Recipe.objects.all().prefetch_related("ingredients")
+
+    if course_filter and course_filter in course_map:
+        queryset = queryset.filter(recipe_type=course_map[course_filter])
 
     if query:
-        if search_type == "ingredient":
-            # Filter recipes that have an ingredient whose name contains the query
-            queryset = queryset.filter(ingredients__name__icontains=query).distinct()
-        else:
-            # Default: search by recipe title/name
+        if search_type == "name":
             queryset = queryset.filter(title__icontains=query)
+        elif search_type == "ingredient":
+            queryset = queryset.filter(ingredients__name__icontains=query).distinct()
 
     recipes = [_serialize_recipe(r) for r in queryset]
     return JsonResponse({"recipes": recipes})

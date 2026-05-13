@@ -10,12 +10,12 @@ if (searchForm) {
     e.preventDefault();
 
     const formData = new FormData(searchForm);
-    const query      = formData.get('query').trim();
-    const searchType = formData.get('search_type');
-    const course     = formData.get('course');
+    const query = formData.get('query').trim();
+    const search_type = formData.get('search_type');
+    const course = formData.get('course');
 
     // Send filters to Django API
-    const recipes = await fetchRecipes({ query, search_type: searchType, course });
+    const recipes = await fetchRecipes({ query, search_type, course });
     renderRecipesUser(recipes);
   });
 }
