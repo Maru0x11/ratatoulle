@@ -24,7 +24,7 @@ export function renderRecipes(data = null) {
 
   container.innerHTML = "";
   const recipesToShow =
-    data || JSON.parse(localStorage.getItem("recipesArr") || "[]");
+	data || []
 
   if (recipesToShow.length === 0) {
     container.innerHTML = "<p>No recipes found.</p>";
@@ -32,7 +32,7 @@ export function renderRecipes(data = null) {
   }
 
   recipesToShow.forEach((recipe, index) => {
-    const id = recipe.id ?? index;
+    const id = recipe.id
     const card = document.createElement("div");
     card.className = "recipe-card";
     card.innerHTML = `
@@ -59,7 +59,7 @@ export function renderRecipesUser(data = null) {
 
   container.innerHTML = "";
   const recipesToShow =
-    data || JSON.parse(localStorage.getItem("recipesArr") || "[]");
+    data || []
 
   if (recipesToShow.length === 0) {
     container.innerHTML = "<p>No recipes found.</p>";
@@ -73,15 +73,15 @@ export function renderRecipesUser(data = null) {
       <h3>Recipe Name: ${escapeHtml(recipe.name)}</h3>
       <p>Course: ${escapeHtml(recipe.course)}</p>
       <p>${escapeHtml(recipe.description)}</p>
-      <a href="recipe_detail.html?name=${encodeURIComponent(recipe.name)}" class="btn-card">View Details</a>
-      <button type="button" class="btn-fav" data-name="${escapeHtml(recipe.name)}">Add to Favourites</button>
+      <a href="recipe_detail.html?id=${recipe.id}" class="btn-card">View Details</a>
+      <button type="button" class="btn-fav" data-id="${recipe.id}">Add to Favourites</button>
     `;
     container.appendChild(card);
   });
 
   container.addEventListener("click", (e) => {
     if (e.target.classList.contains("btn-fav")) {
-      window.addToFavorites(e.target.dataset.name);
+	window.addToFavorites(e.target.dataset.id);
     }
   });
 }

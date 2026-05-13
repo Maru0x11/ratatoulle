@@ -17,7 +17,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const container = document.getElementById('favorites-list');
     if (!container) return;
 
-    const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
 
     if (favorites.length === 0) {
         container.innerHTML = '<tr><td colspan="6" style="text-align:center; padding: 20px;">Your favorites list is empty.</td></tr>';
@@ -52,14 +51,15 @@ document.addEventListener('DOMContentLoaded', () => {
  * Global function attached to window so it can be called from search results.
  * Finds the recipe by name to ensure the correct item is added even after filtering.
  */
-window.addToFavorites = function(recipeName) {
+window.addToFavorites = function(recipeId) {
+    console.log(`Adding ID ${recipeId} to favorites list`);
     const recipesArr = JSON.parse(localStorage.getItem('recipesArr') || '[]');
     let favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
     
     // Filter out any null/invalid entries
     favorites = favorites.filter(fav => fav !== null && fav !== undefined);
 
-    const selectedRecipe = recipesArr.find(r => r.name === recipeName);
+    const selectedRecipe = recipesArr.find(r => r.name === recipeId);
 
     if (!selectedRecipe) {
         console.error("Recipe not found:", recipeName);

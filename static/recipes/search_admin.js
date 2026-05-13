@@ -1,43 +1,32 @@
 /* search_logic.js */
-import { renderRecipes } from './render_recipes.js';
+import { renderRecipesUser } from './render_recipes.js';
 
-renderRecipes();
+async function loadRecipes() {
+    const response = await fetch('/api/recipes/');
+    const data = await response.json();
+    renderRecipesUser(data);
+}
+loadRecipes();
 
 const searchForm = document.querySelector('.search-container form');
 
 if (searchForm) {
-    searchForm.addEventListener('submit', function(e) {
+    searchForm.addEventListener('submit', async function(e) {
         e.preventDefault(); 
 
-        // get parameters from the form
         const formData = new FormData(searchForm);
-        const query = formData.get('query').toLowerCase().trim();
+        const query = formData.get('query').trim();
         const searchType = formData.get('search_type');
-        const courseFilter = formData.get('course').toLowerCase();
+        const courseFilter = formData.get('course');
 
 
-        const allRecipes = JSON.parse(localStorage.getItem('recipesArr') || '[]');
+        const params = new URLSearchParams();
+        if (query) params.append('q', query);
+        if (searchType) params.append('type', searchType);
+        if (courseFilter) params.append('course', courseFilter);
 
-        // filter allrecipes based on parameters
-        const filteredResults = allRecipes.filter(recipe => {
-            const matchesCourse = (courseFilter === "" || recipe.course.toLowerCase() === courseFilter);
-            
-            let matchesQuery = true;
-            if (query !== "") {
-                if (searchType === 'name') {
-                    matchesQuery = recipe.name.toLowerCase().includes(query);
-                } else if (searchType === 'ingredient') {
-                    // Checks if any ingredient name matches the query
-                    matchesQuery = recipe.ingredients.some(ing => 
-                        ing.name.toLowerCase().includes(query)
-                    );
-                }
-            }
-
-            return matchesCourse && matchesQuery;
-        });
-
-        // call render recipes on the partially filtered results
-        renderRecipes(filteredResults);
+        const response = await fetch(`/api/recipes/?${params.toString()}`);
+        const data = await response.json();
+        renderRecipesUser(data);
     });
 }

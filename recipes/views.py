@@ -75,6 +75,28 @@ def _serialize_recipe(recipe):
         ],
     }
 
+@require_http_methods(["GET"])
+def recipe_list_api(request):
+    """
+    Retrieves a list of recipes with optional filtering by query, type, and course.
+    """
+    query = request.GET.get('q', '').strip()
+    search_type = request.GET.get('type', 'name')
+    course_filter = request.GET.get('course', '').strip().lower()
+
+    recipes = Recipe.objects.all().prefetch_related("ingredients")
+
+    if course_filter:
+        recipes = recipes.filter(recipe_type__iexact=course_filter)
+
+    if query:
+        if search_type == 'name':
+            recipes = recipes.filter(title__icontains=query)
+        elif search_type == 'ingredient':
+            recipes = recipes.filter(ingredients__name__icontains=query).distinct()
+
+    serialized_recipes = [_serialize_recipe(recipe) for recipe in recipes]
+    return JsonResponse(serialized_recipes, safe=False)
 
 @require_http_methods(["POST"])
 def create_recipe(request):
