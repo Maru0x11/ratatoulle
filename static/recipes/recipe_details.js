@@ -28,15 +28,27 @@ document.addEventListener("DOMContentLoaded", async () => {
         // Setup Favorites Form logic
         const favForm = document.getElementById("add-fav-form");
         if (favForm) {
-          favForm.addEventListener("submit", function (e) {
+          favForm.addEventListener("submit", async function (e) {
             e.preventDefault();
-            const favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
-            if (favorites.some((f) => f.id === recipe.id)) {  // now checks by id
-              alert("This recipe is already in your favorites!");
-            } else {
-              favorites.push(recipe);
-              localStorage.setItem("favorites", JSON.stringify(favorites));
+            try {
+              const response = await fetch(`/api/favorites/${recipe.id}/`, {
+                method: "POST",
+                headers: {
+                  "X-CSRFToken": getCookie("csrftoken"),
+                },
+              });
+              if (response.status === 409) {
+                alert("This recipe is already in your favorites!");
+                return;
+              }
+              if (!response.ok) {
+                const data = await response.json().catch(() => ({}));
+                alert(data.error || "Failed to add to favorites.");
+                return;
+              }
               alert("Added to Favorites!");
+            } catch (favError) {
+              alert("Network error while adding favorite.");
             }
           });
         }
@@ -47,3 +59,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   }
 });
+
+function getCookie(name) {
+  const cookieValue = `; ${document.cookie}`;
+  const parts = cookieValue.split(`; ${name}=`);
+  if (parts.length === 2) {
+    return parts.pop().split(";").shift();
+  }
+  return "";
+}

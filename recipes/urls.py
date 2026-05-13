@@ -34,6 +34,8 @@ urlpatterns = [
     path("api/recipes/", views.list_recipes, name="list_recipes"),
     path("api/recipes/create/", views.create_recipe, name="create_recipe"),
     path("api/recipes/<int:recipe_id>/", views.recipe_detail_api, name="recipe_detail_api"),
+    path("api/favorites/", views.list_favorites, name="list_favorites"),
+    path("api/favorites/<int:recipe_id>/", views.toggle_favorite, name="toggle_favorite"),
 
     # Auth API
     path("api/login/", views.api_login, name="api_login"),

@@ -101,9 +101,12 @@ export function renderRecipesUser(recipes = []) {
     container.appendChild(card);
   });
 
-  container.addEventListener("click", (e) => {
-    if (e.target.classList.contains("btn-fav")) {
-	window.addToFavorites(e.target.dataset.id);
-    }
-  });
+  if (!container.dataset.favoritesBound) {
+    container.addEventListener("click", (e) => {
+      if (e.target.classList.contains("btn-fav") && typeof window.addToFavorites === "function") {
+        window.addToFavorites(e.target.dataset.id);
+      }
+    });
+    container.dataset.favoritesBound = "1";
+  }
 }

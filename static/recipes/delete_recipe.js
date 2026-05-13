@@ -1,4 +1,4 @@
-import { renderRecipes } from "./render_recipes.js";
+import { fetchRecipes, renderRecipes } from "./render_recipes.js";
 
 function getCookie(name) {
   const cookieValue = `; ${document.cookie}`;
@@ -57,7 +57,8 @@ function executeDelete(index, redirect) {
       if (redirect) {
         window.location.href = "manage_recipes.html";
       } else {
-        renderRecipes(); // Refresh the list automatically
+        const recipes = await fetchRecipes();
+        renderRecipes(recipes);
       }
     } catch (error) {
       alert("Network error while deleting recipe.");

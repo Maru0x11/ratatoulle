@@ -1,5 +1,3 @@
-export let recipesArr = [];
-
 function getCookie(name) {
     const cookieValue = `; ${document.cookie}`;
     const parts = cookieValue.split(`; ${name}=`);

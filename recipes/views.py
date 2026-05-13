@@ -2,9 +2,8 @@ import json
 from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
 from django.contrib.auth import authenticate, login, logout
-from django.db import IntegrityError
 from django.views.decorators.csrf import ensure_csrf_cookie
-from .models import Ingredient, Recipe, User
+from .models import Favourite, Ingredient, Recipe, User
 
 
 def _json_error(message, status=400):
@@ -13,6 +12,12 @@ def _json_error(message, status=400):
 
 def _is_admin_user(user):
     return user.is_authenticated and (user.is_admin or user.is_staff or user.is_superuser)
+
+
+def _require_authenticated(request):
+    if not request.user.is_authenticated:
+        return _json_error("Authentication required.", status=401)
+    return None
 
 
 def _validate_recipe_payload(payload):
@@ -141,15 +146,15 @@ def create_recipe(request):
 
 @require_http_methods(["GET", "PUT", "DELETE"])
 def recipe_detail_api(request, recipe_id):
-    if not _is_admin_user(request.user):
-        return _json_error("Admin access required.", status=403)
-
     recipe = Recipe.objects.filter(id=recipe_id).prefetch_related("ingredients").first()
     if not recipe:
         return _json_error("Recipe not found.", status=404)
 
     if request.method == "GET":
         return JsonResponse({"recipe": _serialize_recipe(recipe)})
+
+    if not _is_admin_user(request.user):
+        return _json_error("Admin access required.", status=403)
 
     if request.method == "DELETE":
         recipe.delete()
@@ -270,3 +275,42 @@ def get_session_info(request):
             }
         })
     return JsonResponse({"authenticated": False})
+
+
+@require_http_methods(["GET"])
+def list_favorites(request):
+    auth_error = _require_authenticated(request)
+    if auth_error:
+        return auth_error
+
+    favourite_list = Favourite.objects.filter(user=request.user).prefetch_related(
+        "recipes__ingredients"
+    ).first()
+    recipes = []
+    if favourite_list:
+        recipes = [_serialize_recipe(recipe) for recipe in favourite_list.recipes.all()]
+    return JsonResponse({"recipes": recipes})
+
+
+@require_http_methods(["POST", "DELETE"])
+def toggle_favorite(request, recipe_id):
+    auth_error = _require_authenticated(request)
+    if auth_error:
+        return auth_error
+
+    recipe = Recipe.objects.filter(id=recipe_id).first()
+    if not recipe:
+        return _json_error("Recipe not found.", status=404)
+
+    favourite_list, _ = Favourite.objects.get_or_create(user=request.user)
+
+    if request.method == "POST":
+        if favourite_list.recipes.filter(id=recipe.id).exists():
+            return _json_error("Recipe already in favorites.", status=409)
+        favourite_list.recipes.add(recipe)
+        return JsonResponse({"message": "Recipe added to favorites."}, status=201)
+
+    if not favourite_list.recipes.filter(id=recipe.id).exists():
+        return _json_error("Recipe is not in favorites.", status=404)
+    favourite_list.recipes.remove(recipe)
+    return JsonResponse({"message": "Recipe removed from favorites."})
