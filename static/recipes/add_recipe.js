@@ -68,15 +68,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 description: document.getElementById("description").value.trim(),
                 ingredients: ingredients
             };
+            const imageInput = document.getElementById("recipe_image");
+            const selectedImage = imageInput && imageInput.files ? imageInput.files[0] : null;
+            const formData = new FormData();
+            formData.append("recipe", JSON.stringify(recipe));
+            if (selectedImage) {
+                formData.append("image", selectedImage);
+            }
 
             try {
                 const response = await fetch("/api/recipes/create/", {
                     method: "POST",
                     headers: {
-                        "Content-Type": "application/json",
                         "X-CSRFToken": getCookie("csrftoken"),
                     },
-                    body: JSON.stringify(recipe),
+                    body: formData,
                 });
 
                 if (!response.ok) {

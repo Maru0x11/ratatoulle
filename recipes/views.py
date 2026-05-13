@@ -20,6 +20,14 @@ def _require_authenticated(request):
     return None
 
 
+def _favorite_recipe_ids(user):
+    if not user or not user.is_authenticated:
+        return set()
+    return set(
+        Favourite.objects.filter(user=user).values_list("recipes__id", flat=True)
+    )
+
+
 def _validate_recipe_payload(payload):
     title = str(payload.get("name", "")).strip()
     course = str(payload.get("course", "")).strip().lower()
@@ -64,7 +72,7 @@ def _validate_recipe_payload(payload):
     }, None
 
 
-def _serialize_recipe(recipe):
+def _serialize_recipe(recipe, favorite_ids=None):
     course_map = {
         Recipe.CourseType.APPETIZERS: "appetizers",
         Recipe.CourseType.MAIN_COURSE: "main course",
@@ -75,6 +83,8 @@ def _serialize_recipe(recipe):
         "name": recipe.title,
         "course": course_map.get(recipe.recipe_type, recipe.recipe_type),
         "description": recipe.description,
+        "image_url": recipe.image.url if recipe.image else None,
+        "is_favorite": recipe.id in (favorite_ids or set()),
         "ingredients": [
             {"name": ingredient.name, "quantity": ingredient.quantity}
             for ingredient in recipe.ingredients.all()
@@ -107,7 +117,9 @@ def list_recipes(request):
         elif search_type == "ingredient":
             queryset = queryset.filter(ingredients__name__icontains=query).distinct()
 
-    recipes = [_serialize_recipe(r) for r in queryset]
+    favorite_ids = _favorite_recipe_ids(request.user)
+    queryset = queryset.prefetch_related("ingredients")
+    recipes = [_serialize_recipe(r, favorite_ids) for r in queryset]
     return JsonResponse({"recipes": recipes})
 
 @require_http_methods(["POST"])
@@ -115,10 +127,20 @@ def create_recipe(request):
     if not _is_admin_user(request.user):
         return _json_error("Admin access required.", status=403)
 
-    try:
-        payload = json.loads(request.body or "{}")
-    except json.JSONDecodeError:
-        return _json_error("Invalid JSON payload.")
+    payload = {}
+    image = None
+    if request.content_type and request.content_type.startswith("multipart/form-data"):
+        recipe_payload = request.POST.get("recipe", "{}")
+        try:
+            payload = json.loads(recipe_payload)
+        except json.JSONDecodeError:
+            return _json_error("Invalid recipe payload.")
+        image = request.FILES.get("image")
+    else:
+        try:
+            payload = json.loads(request.body or "{}")
+        except json.JSONDecodeError:
+            return _json_error("Invalid JSON payload.")
 
     cleaned_data, error = _validate_recipe_payload(payload)
     if error:
@@ -129,6 +151,7 @@ def create_recipe(request):
         description=cleaned_data["description"],
         recipe_type=cleaned_data["recipe_type"],
         author=request.user,
+        image=image,
     )
 
     for ingredient_data in cleaned_data["ingredients"]:
@@ -139,7 +162,7 @@ def create_recipe(request):
         recipe.ingredients.add(ingredient)
 
     return JsonResponse(
-        {"message": "Recipe created successfully.", "recipe": _serialize_recipe(recipe)},
+        {"message": "Recipe created successfully.", "recipe": _serialize_recipe(recipe, _favorite_recipe_ids(request.user))},
         status=201,
     )
 
@@ -151,7 +174,7 @@ def recipe_detail_api(request, recipe_id):
         return _json_error("Recipe not found.", status=404)
 
     if request.method == "GET":
-        return JsonResponse({"recipe": _serialize_recipe(recipe)})
+        return JsonResponse({"recipe": _serialize_recipe(recipe, _favorite_recipe_ids(request.user))})
 
     if not _is_admin_user(request.user):
         return _json_error("Admin access required.", status=403)
@@ -183,7 +206,7 @@ def recipe_detail_api(request, recipe_id):
         )
         recipe.ingredients.add(ingredient)
 
-    return JsonResponse({"message": "Recipe updated successfully.", "recipe": _serialize_recipe(recipe)})
+    return JsonResponse({"message": "Recipe updated successfully.", "recipe": _serialize_recipe(recipe, _favorite_recipe_ids(request.user))})
 
 
 @ensure_csrf_cookie
@@ -288,7 +311,8 @@ def list_favorites(request):
     ).first()
     recipes = []
     if favourite_list:
-        recipes = [_serialize_recipe(recipe) for recipe in favourite_list.recipes.all()]
+        favorite_ids = _favorite_recipe_ids(request.user)
+        recipes = [_serialize_recipe(recipe, favorite_ids) for recipe in favourite_list.recipes.all()]
     return JsonResponse({"recipes": recipes})
 
 

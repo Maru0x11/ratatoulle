@@ -1,5 +1,5 @@
-import { renderRecipes } from './render_recipes.js';
-import './delete_recipe.js'; 
+import { fetchRecipes, renderRecipes } from './render_recipes.js';
+import './delete_recipe.js';
 
-// write the initial recipes
-renderRecipes();
+// Fetch from API then render
+fetchRecipes().then(renderRecipes);

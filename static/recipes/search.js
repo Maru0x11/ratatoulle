@@ -1,4 +1,6 @@
 import { fetchRecipes, renderRecipesUser } from './render_recipes.js';
+import './favorites.js';
+
 
 // Load all recipes when the page first loads
 fetchRecipes().then(renderRecipesUser);
@@ -6,7 +8,7 @@ fetchRecipes().then(renderRecipesUser);
 const searchForm = document.querySelector('.search-container form');
 
 if (searchForm) {
-  searchForm.addEventListener('submit', async function (e) {
+  searchForm.addEventListener('submit', async function(e) {
     e.preventDefault();
 
     const formData = new FormData(searchForm);

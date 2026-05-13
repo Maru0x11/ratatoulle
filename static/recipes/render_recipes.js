@@ -10,6 +10,19 @@ function escapeHtml(str) {
     .replace(/'/g, "&#039;");
 }
 
+function renderRecipeImage(imageUrl, recipeName) {
+  if (!imageUrl) return "";
+  return `<img src="${escapeHtml(imageUrl)}" alt="${escapeHtml(recipeName)}" class="recipe-card-image">`;
+}
+
+function renderFavoriteButton(recipe) {
+  const isFavorite = Boolean(recipe.is_favorite);
+  const label = isFavorite ? "In Favourites" : "Add to Favourites";
+  const disabled = isFavorite ? "disabled" : "";
+  const extraClass = isFavorite ? " is-favorite" : "";
+  return `<button type="button" class="btn-fav${extraClass}" data-id="${recipe.id}" ${disabled}>${label}</button>`;
+}
+
 /**
  * Fetches recipes from the Django API with optional filters.
  * Sends query params: query, search_type, course
@@ -61,6 +74,7 @@ export function renderRecipes(recipes = []) {
     const card = document.createElement("div");
     card.className = "recipe-card";
     card.innerHTML = `
+      ${renderRecipeImage(recipe.image_url, recipe.name)}
       <h3>Recipe Name: ${escapeHtml(recipe.name)}</h3>
       <p>Course: ${escapeHtml(recipe.course)}</p>
       <p>${escapeHtml(recipe.description)}</p>
@@ -92,11 +106,12 @@ export function renderRecipesUser(recipes = []) {
     const card = document.createElement("div");
     card.className = "recipe-card";
     card.innerHTML = `
+      ${renderRecipeImage(recipe.image_url, recipe.name)}
       <h3>Recipe Name: ${escapeHtml(recipe.name)}</h3>
       <p>Course: ${escapeHtml(recipe.course)}</p>
       <p>${escapeHtml(recipe.description)}</p>
       <a href="recipe_detail.html?id=${recipe.id}" class="btn-card">View Details</a>
-      <button type="button" class="btn-fav" data-id="${recipe.id}">Add to Favourites</button>
+      ${renderFavoriteButton(recipe)}
     `;
     container.appendChild(card);
   });

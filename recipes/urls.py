@@ -1,25 +1,29 @@
 from django.urls import path
 from django.views.generic import TemplateView
 from django.views.generic.base import RedirectView
+from django.views.decorators.csrf import ensure_csrf_cookie
 
 from . import views
 
+def csrf_template_view(template_name):
+    return ensure_csrf_cookie(TemplateView.as_view(template_name=template_name))
+
 urlpatterns = [
-    path("", TemplateView.as_view(template_name="recipes/index.html"), name="index"),
-    path("index.html", TemplateView.as_view(template_name="recipes/index.html")),
-    path("search.html", TemplateView.as_view(template_name="recipes/search.html")),
-    path("login.html", TemplateView.as_view(template_name="recipes/login.html")),
-    path("signup.html", TemplateView.as_view(template_name="recipes/signup.html")),
-    path("favorites.html", TemplateView.as_view(template_name="recipes/favorites.html")),
-    path("manage_recipes.html", TemplateView.as_view(template_name="recipes/manage_recipes.html")),
-    path("add_recipe.html", TemplateView.as_view(template_name="recipes/add_recipe.html")),
-    path("edit_recipe.html", TemplateView.as_view(template_name="recipes/edit_recipe.html")),
-    path("recipe_detail.html", TemplateView.as_view(template_name="recipes/recipe_detail.html")),
+    path("", csrf_template_view("recipes/index.html"), name="index"),
+    path("index.html", csrf_template_view("recipes/index.html")),
+    path("search.html", csrf_template_view("recipes/search.html")),
+    path("login.html", csrf_template_view("recipes/login.html")),
+    path("signup.html", csrf_template_view("recipes/signup.html")),
+    path("favorites.html", csrf_template_view("recipes/favorites.html")),
+    path("manage_recipes.html", csrf_template_view("recipes/manage_recipes.html")),
+    path("add_recipe.html", csrf_template_view("recipes/add_recipe.html")),
+    path("edit_recipe.html", csrf_template_view("recipes/edit_recipe.html")),
+    path("recipe_detail.html", csrf_template_view("recipes/recipe_detail.html")),
     path(
         "recipe_detail_admin.html",
-        TemplateView.as_view(template_name="recipes/recipe_detail_admin.html"),
+        csrf_template_view("recipes/recipe_detail_admin.html"),
     ),
-    path("index_admin.html", TemplateView.as_view(template_name="recipes/index_admin.html")),
+    path("index_admin.html", csrf_template_view("recipes/index_admin.html")),
 
     # Redirects
     path(

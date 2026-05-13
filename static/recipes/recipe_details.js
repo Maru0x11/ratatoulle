@@ -1,24 +1,36 @@
+import { getCsrfToken } from './auth.js';
+
 document.addEventListener("DOMContentLoaded", async () => {
   const urlParams = new URLSearchParams(window.location.search);
-  const recipeId = urlParams.get("id"); 
+  const recipeId = urlParams.get("id");
 
   if (recipeId) {
     try {
       const response = await fetch(`/api/recipes/${recipeId}/`);
       if (!response.ok) throw new Error("Recipe not found");
-      
+
       const data = await response.json();
       const recipe = data.recipe;
 
       if (recipe) {
         document.getElementById("recipe-name").textContent = recipe.name;
+        const recipeImage = document.getElementById("recipe-image");
+        if (recipeImage) {
+          if (recipe.image_url) {
+            recipeImage.src = recipe.image_url;
+            recipeImage.alt = `${recipe.name} image`;
+            recipeImage.style.display = "block";
+          } else {
+            recipeImage.style.display = "none";
+          }
+        }
         document.getElementById("recipe-course").textContent = recipe.course;
         document.getElementById("recipe-description").textContent = recipe.description;
 
         const tbody = document.getElementById("recipe-ingredients");
-        tbody.innerHTML = ""; 
+        tbody.innerHTML = "";
         recipe.ingredients.forEach((ing, i) => {
-          if (!ing.name.trim()) return; 
+          if (!ing.name.trim()) return;
           const row = tbody.insertRow();
           row.insertCell().textContent = i + 1;
           row.insertCell().textContent = ing.name;
@@ -28,13 +40,13 @@ document.addEventListener("DOMContentLoaded", async () => {
         // Setup Favorites Form logic
         const favForm = document.getElementById("add-fav-form");
         if (favForm) {
-          favForm.addEventListener("submit", async function (e) {
+          favForm.addEventListener("submit", async function(e) {
             e.preventDefault();
             try {
               const response = await fetch(`/api/favorites/${recipe.id}/`, {
                 method: "POST",
                 headers: {
-                  "X-CSRFToken": getCookie("csrftoken"),
+                  "X-CSRFToken": getCsrfToken(),
                 },
               });
               if (response.status === 409) {
@@ -60,11 +72,5 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 });
 
-function getCookie(name) {
-  const cookieValue = `; ${document.cookie}`;
-  const parts = cookieValue.split(`; ${name}=`);
-  if (parts.length === 2) {
-    return parts.pop().split(";").shift();
-  }
-  return "";
-}
+
+

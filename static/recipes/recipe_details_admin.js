@@ -16,6 +16,16 @@ document.addEventListener("DOMContentLoaded", () => {
     .then((data) => {
       const recipe = data.recipe;
       document.getElementById("detail-name").textContent = recipe.name;
+      const recipeImage = document.getElementById("detail-image");
+      if (recipeImage) {
+        if (recipe.image_url) {
+          recipeImage.src = recipe.image_url;
+          recipeImage.alt = `${recipe.name} image`;
+          recipeImage.style.display = "block";
+        } else {
+          recipeImage.style.display = "none";
+        }
+      }
       document.getElementById("detail-course").textContent = recipe.course;
       document.getElementById("detail-description").textContent = recipe.description;
 
