@@ -29,13 +29,16 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         const tbody = document.getElementById("recipe-ingredients");
         tbody.innerHTML = "";
-        recipe.ingredients.forEach((ing, i) => {
-          if (!ing.name.trim()) return;
-          const row = tbody.insertRow();
-          row.insertCell().textContent = i + 1;
-          row.insertCell().textContent = ing.name;
-          row.insertCell().textContent = ing.quantity;
-        });
+        if (recipe.ingredients && Array.isArray(recipe.ingredients)) {
+          recipe.ingredients.forEach((ing, i) => {
+            const name = (ing.name || "").trim();
+            if (!name) return;
+            const row = tbody.insertRow();
+            row.insertCell().textContent = i + 1;
+            row.insertCell().textContent = name;
+            row.insertCell().textContent = ing.quantity || "";
+          });
+        }
 
         // Setup Favorites Form logic
         const favForm = document.getElementById("add-fav-form");

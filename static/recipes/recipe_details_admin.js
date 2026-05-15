@@ -31,10 +31,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const tbody = document.getElementById("detail-ingredients");
       tbody.innerHTML = "";
-      recipe.ingredients.forEach((ing, i) => {
-        if (!ing.name.trim()) return;
-        tbody.innerHTML += `<tr><td>${i + 1}</td><td>${ing.name}</td><td>${ing.quantity}</td></tr>`;
-      });
+      if (recipe.ingredients && Array.isArray(recipe.ingredients)) {
+        recipe.ingredients.forEach((ing, i) => {
+          const name = (ing.name || "").trim();
+          if (!name) return;
+          const row = tbody.insertRow();
+          row.insertCell().textContent = i + 1;
+          row.insertCell().textContent = name;
+          row.insertCell().textContent = ing.quantity || "";
+        });
+      }
     })
     .catch(() => {
       document.querySelector(".recipe-detail-main").innerHTML =
