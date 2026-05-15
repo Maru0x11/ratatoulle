@@ -10,20 +10,20 @@ def csrf_template_view(template_name):
 
 urlpatterns = [
     path("", csrf_template_view("recipes/index.html"), name="index"),
-    path("index.html", csrf_template_view("recipes/index.html")),
-    path("search.html", csrf_template_view("recipes/search.html")),
-    path("login.html", csrf_template_view("recipes/login.html")),
-    path("signup.html", csrf_template_view("recipes/signup.html")),
-    path("favorites.html", csrf_template_view("recipes/favorites.html")),
-    path("manage_recipes.html", csrf_template_view("recipes/manage_recipes.html")),
-    path("add_recipe.html", csrf_template_view("recipes/add_recipe.html")),
-    path("edit_recipe.html", csrf_template_view("recipes/edit_recipe.html")),
-    path("recipe_detail.html", csrf_template_view("recipes/recipe_detail.html")),
+    path("index", csrf_template_view("recipes/index.html")),
+    path("search", csrf_template_view("recipes/search.html")),
+    path("login", csrf_template_view("recipes/login.html")),
+    path("signup", csrf_template_view("recipes/signup.html")),
+    path("favorites", csrf_template_view("recipes/favorites.html")),
+    path("manage_recipes", csrf_template_view("recipes/manage_recipes.html")),
+    path("add_recipe", csrf_template_view("recipes/add_recipe.html")),
+    path("edit_recipe", csrf_template_view("recipes/edit_recipe.html")),
+    path("recipe_detail", csrf_template_view("recipes/recipe_detail.html")),
     path(
-        "recipe_detail_admin.html",
+        "recipe_detail_admin",
         csrf_template_view("recipes/recipe_detail_admin.html"),
     ),
-    path("index_admin.html", csrf_template_view("recipes/index_admin.html")),
+    path("index_admin", csrf_template_view("recipes/index_admin.html")),
 
     # Redirects
     path(
